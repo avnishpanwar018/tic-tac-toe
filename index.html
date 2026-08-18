@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Link to CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main game container -->
+    <div class="game-container">
+        <!-- Header with title -->
+        <header class="header">
+            <h1 class="title">Tic Tac Toe</h1>
+            <!-- Sound toggle button -->
+            <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">
+                <span class="sound-icon">🔊</span>
+            </button>
+        </header>
+
+        <!-- Mode selector: 2 Players or vs AI -->
+        <div class="mode-selector">
+            <button class="mode-btn active" id="pvpMode">2 Players</button>
+            <button class="mode-btn" id="aiMode">vs AI</button>
+        </div>
+
+        <!-- Scoreboard showing X and O wins -->
+        <div class="scoreboard">
+            <div class="score x-score">
+                <span class="player-label">X</span>
+                <span class="score-value" id="scoreX">0</span>
+            </div>
+            <div class="score-divider">-</div>
+            <div class="score o-score">
+                <span class="player-label">O</span>
+                <span class="score-value" id="scoreO">0</span>
+            </div>
+        </div>
+
+        <!-- Game status showing whose turn or result -->
+        <div class="status" id="status">X's Turn</div>
+
+        <!-- The 3x3 game board -->
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+
+        <!-- Restart button -->
+        <button class="restart-btn" id="restartBtn">Restart Game</button>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Play and enjoy!</p>
+        </footer>
+    </div>
+
+    <!-- Link to JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
