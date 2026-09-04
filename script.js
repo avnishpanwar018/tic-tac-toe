@@ -8,6 +8,7 @@ let currentPlayer = 'X'; // X always starts first
 let gameActive = true; // Is the game currently in progress?
 let isAiMode = false; // Are we playing against AI?
 let soundEnabled = true; // Sound effects on/off
+let difficulty = 'easy'; // 'easy' (random) or 'hard' (minimax)
 
 // Score tracking
 let scoreX = 0;
@@ -22,6 +23,9 @@ const restartBtn = document.getElementById('restartBtn');
 const pvpModeBtn = document.getElementById('pvpMode');
 const aiModeBtn = document.getElementById('aiMode');
 const soundToggle = document.getElementById('soundToggle');
+const difficultySelector = document.getElementById('difficultySelector');
+const easyModeBtn = document.getElementById('easyMode');
+const hardModeBtn = document.getElementById('hardMode');
 
 // Winning combinations - indices that form a line
 const winningConditions = [
@@ -272,28 +276,101 @@ function updateStatus() {
 // ========================================
 
 /**
- * Make a random AI move
+ * Make an AI move based on current difficulty
  */
 function makeAiMove() {
     if (!gameActive) return;
 
-    // Find all empty cells
-    const emptyCells = [];
+    const aiMove = difficulty === 'hard' ? getBestMove() : getRandomMove();
+    if (aiMove !== -1) makeMove(aiMove);
+}
+
+/**
+ * Pick a random empty cell index
+ * @returns {number} - Index of a random empty cell, or -1 if none
+ */
+function getRandomMove() {
+    const emptyCells = board
+        .map((val, idx) => val === '' ? idx : null)
+        .filter(idx => idx !== null);
+    if (emptyCells.length === 0) return -1;
+    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+}
+
+/**
+ * Use Minimax to find the best possible move for the AI (O)
+ * @returns {number} - Index of the optimal cell
+ */
+function getBestMove() {
+    let bestScore = -Infinity;
+    let bestMove = -1;
+
     board.forEach((cell, index) => {
         if (cell === '') {
-            emptyCells.push(index);
+            board[index] = 'O'; // Try this move
+            const score = minimax(board, 0, false);
+            board[index] = ''; // Undo the move
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = index;
+            }
         }
     });
 
-    // If no empty cells (shouldn't happen), return
-    if (emptyCells.length === 0) return;
+    return bestMove;
+}
 
-    // Pick random empty cell
-    const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    const aiMove = emptyCells[randomIndex];
+/**
+ * Minimax algorithm - recursively evaluates all possible game states
+ * @param {string[]} boardState - Current board array
+ * @param {number} depth - Current recursion depth (used to prefer faster wins)
+ * @param {boolean} isMaximizing - True if it's the AI's (O) turn
+ * @returns {number} - Score: +10 (AI wins), -10 (human wins), 0 (draw)
+ */
+function minimax(boardState, depth, isMaximizing) {
+    // Check terminal states
+    const winner = getWinnerFromBoard(boardState);
+    if (winner === 'O') return 10 - depth; // AI wins (prefer faster wins)
+    if (winner === 'X') return depth - 10; // Human wins (prefer longer losses)
+    if (boardState.every(cell => cell !== '')) return 0; // Draw
 
-    // Make the move
-    makeMove(aiMove);
+    if (isMaximizing) {
+        // AI's turn (O) - maximize score
+        let best = -Infinity;
+        boardState.forEach((cell, index) => {
+            if (cell === '') {
+                boardState[index] = 'O';
+                best = Math.max(best, minimax(boardState, depth + 1, false));
+                boardState[index] = '';
+            }
+        });
+        return best;
+    } else {
+        // Human's turn (X) - minimize score
+        let best = Infinity;
+        boardState.forEach((cell, index) => {
+            if (cell === '') {
+                boardState[index] = 'X';
+                best = Math.min(best, minimax(boardState, depth + 1, true));
+                boardState[index] = '';
+            }
+        });
+        return best;
+    }
+}
+
+/**
+ * Check all winning conditions on any given board state
+ * @param {string[]} boardState - Board array to check
+ * @returns {string|null} - 'X', 'O', or null
+ */
+function getWinnerFromBoard(boardState) {
+    for (const [a, b, c] of winningConditions) {
+        if (boardState[a] && boardState[a] === boardState[b] && boardState[a] === boardState[c]) {
+            return boardState[a];
+        }
+    }
+    return null;
 }
 
 // ========================================
@@ -326,6 +403,7 @@ function setPvpMode() {
     isAiMode = false;
     pvpModeBtn.classList.add('active');
     aiModeBtn.classList.remove('active');
+    difficultySelector.classList.add('hidden');
     restartGame();
 }
 
@@ -336,6 +414,27 @@ function setAiMode() {
     isAiMode = true;
     aiModeBtn.classList.add('active');
     pvpModeBtn.classList.remove('active');
+    difficultySelector.classList.remove('hidden');
+    restartGame();
+}
+
+/**
+ * Set difficulty to Easy (random AI)
+ */
+function setEasyDifficulty() {
+    difficulty = 'easy';
+    easyModeBtn.classList.add('active');
+    hardModeBtn.classList.remove('active');
+    restartGame();
+}
+
+/**
+ * Set difficulty to Hard (Minimax AI)
+ */
+function setHardDifficulty() {
+    difficulty = 'hard';
+    hardModeBtn.classList.add('active');
+    easyModeBtn.classList.remove('active');
     restartGame();
 }
 
@@ -369,6 +468,10 @@ restartBtn.addEventListener('click', restartGame);
 // Mode selection buttons
 pvpModeBtn.addEventListener('click', setPvpMode);
 aiModeBtn.addEventListener('click', setAiMode);
+
+// Difficulty buttons
+easyModeBtn.addEventListener('click', setEasyDifficulty);
+hardModeBtn.addEventListener('click', setHardDifficulty);
 
 // Sound toggle
 soundToggle.addEventListener('click', toggleSound);

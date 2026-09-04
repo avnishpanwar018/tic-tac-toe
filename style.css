@@ -114,7 +114,63 @@ body {
 .mode-selector {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+/* ========================================
+   Difficulty Selector
+   ======================================== */
+.difficulty-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 46, 99, 0.2);
+    transition: all 0.3s ease;
+}
+
+.difficulty-selector.hidden {
+    display: none;
+}
+
+.difficulty-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 4px;
+}
+
+.diff-btn {
+    padding: 6px 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: var(--bg-cell);
+    color: var(--text-secondary);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.diff-btn:hover {
+    background: var(--bg-cell-hover);
+    color: var(--text-primary);
+}
+
+.diff-btn.active {
+    background: linear-gradient(135deg, rgba(255, 46, 99, 0.2), rgba(255, 46, 99, 0.1));
+    border-color: var(--color-o);
+    color: var(--color-o);
+    box-shadow: 0 0 15px rgba(255, 46, 99, 0.3);
 }
 
 .mode-btn {
